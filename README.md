@@ -31,6 +31,7 @@ CREATE OR REPLACE TABLE UBER_RIDERS_COMMENTS (
 
 ## Data Insertion
 We insert a set of sample ride-share comments into the table, which will be processed for sentiment analysis.
+Note: The sql script contains more insert statements with various reviews.
 Example:
 ```SQL
 INSERT INTO UBER_RIDERS_COMMENTS (MEMBER, RIDE_COMMENTS, SENTIMENT)
