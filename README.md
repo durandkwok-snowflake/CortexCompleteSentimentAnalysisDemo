@@ -28,3 +28,47 @@ CREATE OR REPLACE TABLE UBER_RIDERS_COMMENTS (
     SENTIMENT VARCHAR
 );
 ```
+
+## Data Insertion
+We insert a set of sample ride-share comments into the table, which will be processed for sentiment analysis.
+Example:
+```SQL
+INSERT INTO UBER_RIDERS_COMMENTS (MEMBER, RIDE_COMMENTS, SENTIMENT)
+VALUES ('JOHN', 'Cancelled trip again...', NULL),
+       ('TINA', 'We recently took an Uber ride...', NULL),
+       -- more comments follow
+       ('JILL', 'Driver was excellent and very knowledgeable about the area...', NULL);
+```
+
+### Sentiment Analysis
+We use Snowflake Cortex to run the sentiment analysis on the ride comments. The LLaMA2-70B model processes each comment and returns the sentiment as "Positive", "Negative", or "Neutral."
+
+### Result Extraction
+The LLM_RESPONSE Common Table Expression (CTE) captures the responses, and we extract the sentiment to display alongside the original comments.
+
+```SQL
+WITH LLM_RESPONSE AS (
+    SELECT
+        MEMBER,
+        RIDE_COMMENTS,
+        SNOWFLAKE.CORTEX.COMPLETE(
+            'llama2-70b-chat',
+            [
+                {'role': 'system', 'content': 'You are a helpful AI assistant. Analyze the review text and determine the overall sentiment. Answer with just "Positive", "Negative", or "Neutral"'},
+                {'role': 'user', 'content': a.RIDE_COMMENTS}
+            ],
+            {}
+        ) AS response
+    FROM UBER_RIDERS_COMMENTS a
+)
+SELECT
+    MEMBER,
+    RIDE_COMMENTS,
+    TRIM(response:choices [0] :messages::string) AS sentiment
+FROM LLM_RESPONSE;
+```
+
+![image](https://github.com/user-attachments/assets/31dca457-d583-40cd-b08c-e03a797039e6)
+
+
+
