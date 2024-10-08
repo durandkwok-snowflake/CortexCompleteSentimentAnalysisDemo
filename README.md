@@ -15,3 +15,16 @@ Permissions to execute Snowflake Cortex COMPLETE commands.
 ## Schema and Table Setup
 We create a database, schema, and table in Snowflake to store the ride-share comments. The table structure includes fields for the comment text and the resulting sentiment classification.
 
+```SQL
+CREATE OR REPLACE DATABASE CORTEX_COMPLETE_SENTIMENT;
+USE DATABASE CORTEX_COMPLETE_SENTIMENT;
+
+CREATE OR REPLACE SCHEMA CORTEX_COMPLETE_SENTIMENT_SCHEMA;
+USE SCHEMA CORTEX_COMPLETE_SENTIMENT_SCHEMA;
+
+CREATE OR REPLACE TABLE UBER_RIDERS_COMMENTS (
+    MEMBER VARCHAR,
+    RIDE_COMMENTS VARCHAR,
+    SENTIMENT VARCHAR
+);
+```
